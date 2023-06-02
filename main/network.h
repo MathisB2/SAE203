@@ -11,6 +11,7 @@ private:
     WiFiServer server;
     WiFiClient client;
 public:
+    bool isServer;
     Network();
     void connectTo(const char* ssid, const char* password, const char* serverIP);
     void createServer(const char* ssid, const char* password, int port);

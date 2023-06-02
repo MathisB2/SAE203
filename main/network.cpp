@@ -4,6 +4,7 @@
 Network::Network() {}
 
 void Network::connectTo(const char* ssid, const char* password, const char* serverIP) {
+  isServer = false;
   WiFi.begin(ssid, password);
 
   Serial.print("Connecting");
@@ -19,6 +20,7 @@ void Network::connectTo(const char* ssid, const char* password, const char* serv
 }
 
 void Network::createServer(const char* ssid, const char* password, int port) {
+  isServer = true;
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
 
@@ -39,7 +41,8 @@ String Network::getMessage() {
 
 int Network::clientConnected() {
   if (!client)
-    client = server.available();
+    if(isServer)
+      client = server.available();
 
-  return client && client.connected() && client.available();
+  return client.connected() && client.available();
 }
