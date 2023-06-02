@@ -11,12 +11,12 @@ private:
     WiFiServer server;
     WiFiClient client;
 public:
-    bool isServer;
     Network();
     void connectTo(const char* ssid, const char* password, const char* serverIP);
     void createServer(const char* ssid, const char* password, int port);
     void sendMessage(String message);
     String getMessage();
+    int clientAvailable();
     int clientConnected();
 };
 

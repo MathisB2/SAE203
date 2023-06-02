@@ -9,6 +9,6 @@ void setup() {
 }
 
 void loop() {
-  if(n.clientConnected())
+  if(n.clientConnected() && n.clientAvailable())
     Serial.print(n.getMessage());
 }
