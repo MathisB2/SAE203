@@ -3,8 +3,6 @@
 
 #include <WiFi.h>
 
-using namespace std;
-
 class Network
 {
 private:

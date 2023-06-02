@@ -1,12 +1,19 @@
 #include <WiFi.h>
 #include "network.h"
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SH110X.h>
+extern Adafruit_SH1107 display;
 
 Network::Network() {}
 
 void Network::connectTo(const char* ssid, const char* password, const char* serverIP) {
   WiFi.begin(ssid, password);
 
+
   Serial.print("Connecting");
+  int n=0;
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -19,14 +26,38 @@ void Network::connectTo(const char* ssid, const char* password, const char* serv
 }
 
 void Network::createServer(const char* ssid, const char* password, int port) {
+
+  //display.clearDisplay();
+  display.println("PLAYER A : host\n");
+  display.println("Creating server...");
+  display.display();
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
+
+
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("PLAYER A : host\n");
+  display.println("Server created");
+  display.print("IP : ");
+  display.println(WiFi.softAPIP());
+  display.display();
 
   Serial.print("AP Created with IP Gateway ");
   Serial.println(WiFi.softAPIP());
 
   server = WiFiServer(80);
   server.begin();
+
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("PLAYER A : host\n");
+  display.println("Server created");
+  display.print("IP : ");
+  display.println(WiFi.softAPIP());
+  display.println();
+  display.println("Waiting for player B");
+  display.display();
 }
 
 void Network::sendMessage(String message){
