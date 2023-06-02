@@ -1,16 +1,24 @@
 #include <WiFi.h>
 #include "network.h"
 
-Network::Network()
-{}
+Network::Network() {}
 
-void Network::connectTo(const char* ssid, const char* password, String serverIP)
-{
+void Network::connectTo(const char* ssid, const char* password, const char* serverIP) {
+  WiFi.begin(ssid, password);
 
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.print("Adresse IP de l'ESP en mode station : ");
+  Serial.println(WiFi.localIP());
+
+  client.connect(serverIP, 80);
 }
 
-void Network::createServer(const char* ssid, const char* password, int port)
-{
+void Network::createServer(const char* ssid, const char* password, int port) {
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
 
@@ -21,13 +29,16 @@ void Network::createServer(const char* ssid, const char* password, int port)
   server.begin();
 }
 
-String Network::getMessage()
-{
-  return client.readStringUntil('\r');
+void Network::sendMessage(String message){
+    client.println(message);
 }
 
-int Network::clientConnected(){
-  if(!client)
+String Network::getMessage() {
+  return client.readStringUntil('\n');
+}
+
+int Network::clientConnected() {
+  if (!client)
     client = server.available();
 
   return client && client.connected() && client.available();

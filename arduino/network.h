@@ -12,8 +12,9 @@ private:
     WiFiClient client;
 public:
     Network();
-    void connectTo(const char* ssid, const char* password, String serverIP);
+    void connectTo(const char* ssid, const char* password, const char* serverIP);
     void createServer(const char* ssid, const char* password, int port);
+    void sendMessage(String message);
     String getMessage();
     int clientConnected();
 };
