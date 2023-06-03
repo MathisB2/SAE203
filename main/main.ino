@@ -1,6 +1,8 @@
 #include "BluetoothSerial.h"
 #include "FeatherShieldPinouts.h"
 #include "network.h"
+#include "point.h"
+#include "bar.h"
 #include <string>
 #include <SPI.h>
 #include <Wire.h>
@@ -20,9 +22,20 @@ Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 #define PASSWORD "12345678"
 
 Network n;
-int gameStatus = 0;  //0=connection menu, 1=ready , 2=in game
+int gameStatus = 2;  //0=connection menu, 1=ready , 2=in game
 String player = "A";
+int joystickMiddle;
+int joystickRange = 900;
+int joystickSensivity = 350;  //value in %
 
+int screenWidth = 119;
+int screenHeight = 64;
+
+
+Bar playerBar(20, 5, 50, false);
+Bar topBar(screenHeight, 0, 0);
+Bar bottomBar(screenHeight, 0, screenWidth);
+Bar goalBar(screenWidth, 0, 0,false,false,true);
 
 
 
@@ -41,11 +54,10 @@ void switchPlayer() {  //function linked to an interruption on button A
 void changeGameStatus() {  //function linked to an interruption on button B
   if (gameStatus == 1) {
     gameStatus++;
-    
   }
   if (gameStatus >= 3) {
-      gameStatus = 0;
-    }
+    gameStatus = 0;
+  }
 }
 
 
@@ -65,18 +77,46 @@ void setup() {
   display.setTextSize(1);
   display.setTextColor(SH110X_WHITE);
 
+  playerBar.resetLocation();
+
 
 
   //Add interruption to button A to switch player
   pinMode(BUTTON_A, INPUT_PULLUP);
   pinMode(BUTTON_B, INPUT_PULLUP);
   pinMode(BUTTON_C, INPUT_PULLUP);
+
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+
   attachInterrupt(BUTTON_A, switchPlayer, FALLING);
   attachInterrupt(BUTTON_B, changeGameStatus, FALLING);
+  joystickMiddle = analogRead(A0);
 }
+
+
+
 
 void loop() {
   if (gameStatus == 2) {  //in game
+
+
+    display.clearDisplay();
+    playerBar.updateLocation();
+    playerBar.drawBar();
+    topBar.drawBar();
+    bottomBar.drawBar();
+    goalBar.drawBar();
+
+    display.setCursor(0, screenWidth+2);
+    display.println("Score: 3-2");
+    display.display();
+
+
+
+
+
+
     if (n.clientConnected() && n.clientAvailable())
       Serial.print(n.getMessage());
     //ball.updatePosition()
