@@ -39,12 +39,13 @@ void switchPlayer() {  //function linked to an interruption on button A
 
 
 void changeGameStatus() {  //function linked to an interruption on button B
-  if (gameStatus != 0) {
+  if (gameStatus == 1) {
     gameStatus++;
-    if (gameStatus >= 3) {
+    
+  }
+  if (gameStatus >= 3) {
       gameStatus = 0;
     }
-  }
 }
 
 
@@ -85,20 +86,60 @@ void loop() {
   } else if (gameStatus == 0) {
     if (player == "A") {  //player A is the host
       n.createServer(SSID, PASSWORD, 80);
-      if (n.clientConnected() && n.clientAvailable())
-        Serial.print(n.getMessage());
-      //gameStatus = 1;
+      gameStatus = 1;
 
     } else if (player == "B") {  //player B is the guest
       n.connectTo(SSID, PASSWORD, "192.168.4.1");
-      n.sendMessage("test");
-      //gameStatus = 1;
+      //n.sendMessage("test");
+      gameStatus = 1;
     }
 
   } else if (gameStatus == 1) {  //ready to start game
-    delay(1000);
+    if ((player == "A" && n.getClientNumber() == 1)) {
+      display.clearDisplay();
+      display.setCursor(0, 0);
+      display.println("PLAYER A : host\n\n");
+      display.println("Ready");
+      display.print("Press B to start");
+      display.display();
+    }
+
+    if (player == "B") {
+      display.clearDisplay();
+      display.setCursor(0, 0);
+      display.println("PLAYER B : guest\n\n");
+      display.println("Ready");
+      display.print("Press B to start");
+      display.display();
+    }
+
+
+
+    /*
+    delay(100);
     display.clearDisplay();
     display.setCursor(0, 0);
     display.println("READY");
+    display.display();
+
+    Serial.print(player);
+    Serial.print(" : ");
+    Serial.println(n.getClientNumber());
+
+    /*
+
+    if(n.clientConnected() && n.clientAvailable() && player=="A"){
+      Serial.print("A : Message recivied : ");
+      Serial.println(n.getMessage());
+    }
+
+    if(n.clientConnected() && player=="B"){
+      Serial.println("B : Sending message");
+      n.sendMessage("BtoA");
+    }
+
+
+    delay(5000);
+    */
   }
 }

@@ -16,6 +16,8 @@ public:
     String getMessage();
     int clientAvailable();
     int clientConnected();
+
+    int getClientNumber();
 };
 
 #endif // NETWORK_H
