@@ -20,25 +20,33 @@ Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 #define PASSWORD "12345678"
 
 Network n;
-bool gameStarted=false;
-String player="A";
+int gameStatus = 0;  //0=connection menu, 1=ready , 2=in game
+String player = "A";
 
 
 
 
-void switchPlayer(){ //function linked to an interruption on button A
-  if(player=="A"){
-    player="B";
-  }
-  else{
-    player="A";
+void switchPlayer() {  //function linked to an interruption on button A
+  if (gameStatus <= 1) {
+    if (player == "A") {
+      player = "B";
+    } else {
+      player = "A";
+    }
+    gameStatus = 0;
   }
 }
 
 
-void switchGameState(){ //function linked to an interruption on button B
-  gameStarted=!gameStarted;
+void changeGameStatus() {  //function linked to an interruption on button B
+  if (gameStatus != 0) {
+    gameStatus++;
+    if (gameStatus >= 3) {
+      gameStatus = 0;
+    }
+  }
 }
+
 
 
 
@@ -46,7 +54,7 @@ void switchGameState(){ //function linked to an interruption on button B
 void setup() {
   Serial.begin(115200);
 
-  display.begin(0x3C, true); 
+  display.begin(0x3C, true);
   display.display();
   delay(1000);
   // Clear the buffer.
@@ -63,26 +71,34 @@ void setup() {
   pinMode(BUTTON_B, INPUT_PULLUP);
   pinMode(BUTTON_C, INPUT_PULLUP);
   attachInterrupt(BUTTON_A, switchPlayer, FALLING);
-  attachInterrupt(BUTTON_B, switchGameState, FALLING);
-
-
+  attachInterrupt(BUTTON_B, changeGameStatus, FALLING);
 }
 
 void loop() {
-  if(gameStarted){
-    if(n.clientConnected() && n.clientAvailable())
-    Serial.print(n.getMessage());
+  if (gameStatus == 2) {  //in game
+    if (n.clientConnected() && n.clientAvailable())
+      Serial.print(n.getMessage());
     //ball.updatePosition()
-  }else{
-    if(player=="A"){ //player A is the host
+    //ball.display();
+    //bar.display();
+
+  } else if (gameStatus == 0) {
+    if (player == "A") {  //player A is the host
       n.createServer(SSID, PASSWORD, 80);
-      display.println("PLAYER");
-      gameStarted=true;
-    }
-    else if(player=="B"){ //player B is the guest
+      if (n.clientConnected() && n.clientAvailable())
+        Serial.print(n.getMessage());
+      //gameStatus = 1;
+
+    } else if (player == "B") {  //player B is the guest
       n.connectTo(SSID, PASSWORD, "192.168.4.1");
-      gameStarted=true;
+      n.sendMessage("test");
+      //gameStatus = 1;
     }
+
+  } else if (gameStatus == 1) {  //ready to start game
+    delay(1000);
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.println("READY");
   }
-  
 }
