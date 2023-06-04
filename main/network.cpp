@@ -83,6 +83,7 @@ void Network::createServer(const char* ssid, const char* password, int port) {
 
 
 void Network::sendMessage(String message) {
+  client.flush();
   client.println(message);
 }
 

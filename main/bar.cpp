@@ -51,8 +51,7 @@ void Bar::drawBar() {
 
 
 void Bar::updateLocation() {
-  float move = (analogRead(A0) - joystickMiddle) / (float)joystickRange;
-  // Serial.print(move);
+  float move = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
   if (move < 0.05 && move > -0.05) {
     move = 0;
   } else if (move > 1) {
@@ -60,8 +59,6 @@ void Bar::updateLocation() {
   } else if (move < -1) {
     move = -1;
   }
-  // Serial.print("    ");
-  // Serial.println(move);
 
   this->p.Y += move * (joystickSensivity / 100.0);
   if (this->p.Y < 0) {

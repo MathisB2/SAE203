@@ -34,6 +34,7 @@ void Score::fail(){
 void Score::resetScore(){
   this->self=0;
   this->ennemy=0;
+  this->displayPosition=0;
 }
 
 
