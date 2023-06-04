@@ -52,7 +52,7 @@ void Bar::drawBar() {
 
 void Bar::updateLocation() {
   float move = (analogRead(A0) - joystickMiddle) / (float)joystickRange;
-  Serial.print(move);
+  // Serial.print(move);
   if (move < 0.05 && move > -0.05) {
     move = 0;
   } else if (move > 1) {
@@ -60,8 +60,8 @@ void Bar::updateLocation() {
   } else if (move < -1) {
     move = -1;
   }
-  Serial.print("    ");
-  Serial.println(move);
+  // Serial.print("    ");
+  // Serial.println(move);
 
   this->p.Y += move * (joystickSensivity / 100.0);
   if (this->p.Y < 0) {
@@ -85,19 +85,25 @@ int isCollidedBy(Ball b) {
   //return 2 if vertical and collided <=> need to reverse xVector
   if (this->collide) {
     Point cursor();
+
     if (this->horizontal == true) {
       cursor.X = b.getX();
+
       cursor.Y = this->p.Y;
-      if (cursor.distanceTo(b.getX(), b.getY()) < b.getRadius()) {
-        return 1;
+      if (cursor.X >= this->p.X && cursor.X < this->p.X + this->length) {
+        if (cursor.distanceTo(b.getX(), b.getY()) < b.getRadius()) {
+          return 1;
+        }
       }
     } else {
 
       cursor.X = this->p.X;
       cursor.Y = b.getY();
 
-      if (cursor.distanceTo(b.getX(), b.getY()) < b.getRadius()) {
-        return 2;
+      if (cursor.Y >= this->p.Y && cursor.Y < this->p.Y + this->length) {
+        if (cursor.distanceTo(b.getX(), b.getY()) < b.getRadius()) {
+          return 2;
+        }
       }
     }
   }

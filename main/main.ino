@@ -3,6 +3,7 @@
 #include "network.h"
 #include "point.h"
 #include "bar.h"
+#include "score.h"
 #include <string>
 #include <SPI.h>
 #include <Wire.h>
@@ -22,11 +23,11 @@ Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 #define PASSWORD "12345678"
 
 Network n;
-int gameStatus = 2;  //0=connection menu, 1=ready , 2=in game
+int gameStatus = 2;  //0=connection menu, 1=ready, 2=in game, 3=end menu
 String player = "A";
 int joystickMiddle;
 int joystickRange = 900;
-int joystickSensivity = 350;  //value in %
+int joystickSensivity = 350;  //value in % (default: 350)
 
 int screenWidth = 119;
 int screenHeight = 64;
@@ -36,6 +37,8 @@ Bar playerBar(20, 5, 50, false);
 Bar topBar(screenHeight, 0, 0);
 Bar bottomBar(screenHeight, 0, screenWidth);
 Bar goalBar(screenWidth, 0, 0,false,false,true);
+
+Score score(10);
 
 
 
@@ -80,7 +83,6 @@ void setup() {
   playerBar.resetLocation();
 
 
-
   //Add interruption to button A to switch player
   pinMode(BUTTON_A, INPUT_PULLUP);
   pinMode(BUTTON_B, INPUT_PULLUP);
@@ -96,11 +98,13 @@ void setup() {
 
 
 
-
 void loop() {
   if (gameStatus == 2) {  //in game
 
 
+  //if(n.clientConnected()){
+
+    
     display.clearDisplay();
     playerBar.updateLocation();
     playerBar.drawBar();
@@ -108,20 +112,36 @@ void loop() {
     bottomBar.drawBar();
     goalBar.drawBar();
 
-    display.setCursor(0, screenWidth+2);
-    display.println("Score: 3-2");
+    score.displayScore();
+
     display.display();
 
 
+      if (n.clientAvailable()){
+
+        Serial.print(n.getMessage());
+        if(n.getMessage()=="fail"){
+          score.win();
+          if(score.checkForEnd()){
+            gameStatus=3;
+          }
+        }
+
+        
+      }
+
+   /*   
+    ball.updatePosition()
+    ball.display();
+    bar.display();
 
 
 
+  }else{
+    Serial.pintln("Connection lost");
+    gameStaus=0;
+  }*/
 
-    if (n.clientConnected() && n.clientAvailable())
-      Serial.print(n.getMessage());
-    //ball.updatePosition()
-    //ball.display();
-    //bar.display();
 
   } else if (gameStatus == 0) {
     if (player == "A") {  //player A is the host
