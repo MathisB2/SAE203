@@ -55,15 +55,11 @@ void Ball::move(double delta) {
   if (playerBar.isCollidedBy(*this)) {
     switchX = !switchX;
   }
-  if (goalBar.isCollidedBy(*this)) {  //loose
-    switchX = !switchX;
-  }
-
 
   if (switchX) {
     direction.setY(direction.getY() * -1);
   }
-  if (position.getY()-radius <= 0 || position.getY()+radius >= screenWidth) {
+  if ((position.getY()-radius <= 0 && direction.getY() <= 0)|| (position.getY()+radius >= screenWidth && direction.getY() >0)) {
     direction.setX(direction.getX() * -1);
   }
 }
@@ -72,7 +68,7 @@ bool Ball::changeScreen() {
 }
 
 bool Ball::loose() {
-  return position.getX() <= 0;
+  return position.getX() - radius <= 0;
 }
 
 void Ball::draw() {
