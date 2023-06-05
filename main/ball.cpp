@@ -15,7 +15,7 @@ Ball::Ball()
 Ball::Ball(String ballInfo)
     :position(Vector(0, 0)), direction(Vector(.5, .5)) {
   position = Vector(getSplitedString(ballInfo, 1), getSplitedString(ballInfo, 2));
-  direction = Vector(getSplitedString(ballInfo, 3), -getSplitedString(ballInfo, 4));
+  direction = Vector(-getSplitedString(ballInfo, 3), getSplitedString(ballInfo, 4));
   speed = getSplitedString(ballInfo, 5);
   radius = getSplitedString(ballInfo, 6);
 }
@@ -59,8 +59,8 @@ void Ball::move(double delta) {
   if (switchX) {
     direction.setY(direction.getY() * -1);
   }
-  if ((position.getY()-radius <= 0 && direction.getY() <= 0)|| (position.getY()+radius >= screenWidth && direction.getY() >0)) {
-    direction.setX(direction.getX() * -1);
+  if ((position.getY()-radius <= 0 && direction.getY() >= 0)|| (position.getY()+radius >= screenWidth && direction.getY() >0)) {
+    direction.setY(direction.getY() * -1);
   }
 }
 bool Ball::changeScreen() {
