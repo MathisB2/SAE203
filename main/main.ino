@@ -187,11 +187,15 @@ void loop() {
     if (gameStatus == 3) {  //in game -----------------------------------------------------------------------------
 
       if (n.clientAvailable()) {
-        if (n.getMessage() == "fail") {
+        m = n.getMessage();
+        m.trim();
+        if (m.equals("fail")) {
           score.win();
           if (score.checkForEnd()) {
             gameStatus = 3;
           }
+        }else if(m.substring(0,3).equals("Ball")){
+          b = new Ball(m);
         }
       }
 
@@ -205,8 +209,8 @@ void loop() {
           b->draw();
           if(b->changeScreen())
           {
+            delete(b);
             n.sendMessage(b->toString());
-            //delete(b);
           }
         }
        

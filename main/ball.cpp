@@ -7,15 +7,15 @@
 #include <Adafruit_SH110X.h>
 extern Adafruit_SH1107 display;
 extern int screenWidth, screenHeight;
-extern Bar playerBar, topBar, bottomBar, goalBar, portalBar;
+extern Bar playerBar, topBar, bottomBar, goalBar;
 
 Ball::Ball()
   : position(Vector(screenWidth / 2.0, screenHeight / 2.0)), direction(Vector(.5, .5)), speed(100), radius(20) {}
 
 Ball::Ball(String ballInfo)
-  : position(Vector(0, 0)), direction(Vector(.5, .5)) {
+    :position(Vector(0, 0)), direction(Vector(.5, .5)) {
   position = Vector(getSplitedString(ballInfo, 1), getSplitedString(ballInfo, 2));
-  direction = Vector(getSplitedString(ballInfo, 3), getSplitedString(ballInfo, 4));
+  direction = Vector(-getSplitedString(ballInfo, 3), getSplitedString(ballInfo, 4));
   speed = getSplitedString(ballInfo, 5);
   radius = getSplitedString(ballInfo, 6);
 }
@@ -59,9 +59,6 @@ void Ball::move(double delta) {
   if (goalBar.isCollidedBy(*this)) {  //loose
     switchX = !switchX;
   }
-  if (portalBar.isCollidedBy(*this)) {  //change screen
-    switchX = !switchX;
-  }
   if (topBar.isCollidedBy(*this)) {
     switchY = !switchY;
   }
@@ -77,9 +74,8 @@ void Ball::move(double delta) {
     direction.setX(direction.getX() * -1);
   }
 }
-
 bool Ball::changeScreen() {
-  return position.getX() >= screenWidth;
+  return position.getX()-radius*2 > screenHeight;
 }
 
 bool Ball::loose() {
