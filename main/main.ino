@@ -108,8 +108,8 @@ void setup() {
 unsigned long currentTime = millis();
 
 void loop() {
-    double delta = (double)(millis() - currentTime)/1000;
-    currentTime = millis();
+  double delta = (double)(millis() - currentTime) / 1000;
+  currentTime = millis();
 
 
   if (gameStatus == 0) {  //starting connection ---------------------------------------------------------------
@@ -187,9 +187,9 @@ void loop() {
         if (m.equals("fail")) {
           score.win();
           if (score.checkForEnd()) {
-            gameStatus = 3;
+            gameStatus = 4;
           }
-        }else if(m.substring(0,4).equals("Ball")){
+        } else if (m.substring(0, 4).equals("Ball")) {
           b = new Ball(m);
           Serial.println("new Ball");
         }
@@ -198,20 +198,27 @@ void loop() {
       display.clearDisplay();
 
       //for(Ball b:ballArray){
-        if(b != nullptr)
-        {
-          b->move(delta);
-          Serial.println(b->toString());
-          b->draw();
-          if(b->changeScreen())
-          {
-            n.sendMessage(b->toString());
-            delete(b);
-            b = nullptr;
-          }
+      if (b != nullptr) {
+        b->move(delta);
+        Serial.println(b->toString());
+        b->draw();
+        if (b->changeScreen()) {
+          n.sendMessage(b->toString());
+          delete (b);
+          b = nullptr;
         }
-       
-        
+
+        else if (b->loose()) {
+          n.sendMessage("fail");
+          if (score.checkForEnd()) {
+            gameStatus = 4;
+          }
+          delete (b);
+          b = new Ball();
+        }
+      }
+
+
       //}
 
       playerBar.updateLocation();
