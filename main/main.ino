@@ -33,8 +33,8 @@ int screenWidth = 119;
 int screenHeight = 64;
 
 Bar playerBar(20, 5, 50, false);
-Bar topBar(screenHeight, 0, 0);
-Bar bottomBar(screenHeight, 0, screenWidth);
+Bar topBar(screenHeight*2, 0, 0);
+Bar bottomBar(screenHeight*2, 0, screenWidth);
 Bar goalBar(screenWidth, 0, 0, false, false, true);
 Bar portalBar(screenWidth, screenHeight, 0, false, false, true);
 /// pour plusieurs balles: vector<Ball> ballArray;
@@ -197,19 +197,28 @@ void loop() {
 
       display.clearDisplay();
 
-      //for(Ball b:ballArray){
       if (b != nullptr) {
         b->move(delta);
         Serial.println(b->toString());
         b->draw();
-        /*
-        if (b->changeScreen()) {
-          n.sendMessage(b->toString());
+
+
+        if (b->inPortal && b->getXvector() < 0) {  //if the ball comes from the other screen
+          b->inPortal = false;
+        }
+        if (b->inPortal && !portalBar.isCollidedBy(*b) && b->getXvector() > 0) {  //if the ball get out of the screen
+           Serial.print("Truc : ");
+                    Serial.print(b->getXvector());
           delete (b);
           b = nullptr;
-        }
+                   
+        } else if (!b->inPortal && portalBar.isCollidedBy(*b) && b->getXvector() > 0) {  //if the edge of the ball starts touching the screen limit
 
-        else if (b->loose()) {
+
+          n.sendMessage(b->toString());
+          b->inPortal = true;
+
+        } else if (goalBar.isCollidedBy(*b)) {
           n.sendMessage("fail");
           score.fail();
           if (score.checkForEnd()) {
@@ -217,11 +226,10 @@ void loop() {
           }
           delete (b);
           b = new Ball();
-        }*/
+        }
       }
 
 
-      //}
 
       playerBar.updateLocation();
       playerBar.drawBar();

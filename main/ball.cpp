@@ -10,14 +10,15 @@ extern int screenWidth, screenHeight;
 extern Bar playerBar, topBar, bottomBar, goalBar,portalBar;
 
 Ball::Ball()
-  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(-.5, -.5)), speed(50), radius(5) {}
+  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(-.5, -.5)), speed(50), radius(5),inPortal(false) {}
 
 Ball::Ball(String ballInfo)
     :position(Vector(0, 0)), direction(Vector(.5, .5)) {
-  position = Vector(getSplitedString(ballInfo, 1), getSplitedString(ballInfo, 2));
-  direction = Vector(-getSplitedString(ballInfo, 3), getSplitedString(ballInfo, 4));
+  position = Vector(screenHeight+(screenHeight-getSplitedString(ballInfo, 1)), screenWidth-getSplitedString(ballInfo, 2));
+  direction = Vector(-getSplitedString(ballInfo, 3),- getSplitedString(ballInfo, 4));
   speed = getSplitedString(ballInfo, 5);
   radius = getSplitedString(ballInfo, 6);
+  inPortal=true;
 }
 
 String Ball::toString() {
@@ -77,12 +78,6 @@ void Ball::move(double delta) {
   if (playerBar.isCollidedBy(*this)) {
     switchX = !switchX;
   }
-  if (goalBar.isCollidedBy(*this)) {
-    switchX = !switchX;
-  }
-  if (portalBar.isCollidedBy(*this)) {
-    switchX = !switchX;
-  }
   if (topBar.isCollidedBy(*this)) {
     switchY = !switchY;
   }
@@ -128,4 +123,13 @@ void Ball::draw() {
       }
     }
   }
+}
+
+
+double Ball::getXvector(){
+  return direction.getX();
+}
+
+double Ball::getYvector(){
+  return direction.getY();
 }

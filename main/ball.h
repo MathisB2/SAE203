@@ -10,7 +10,9 @@ private:
   Vector direction;
   double speed;
   double radius;
+  
 public:
+  bool inPortal;
   Ball();
   Ball(String);
   void move(double);
@@ -19,10 +21,13 @@ public:
   double getX() const{return position.getX();}
   double getY() const{return position.getY();}
   double getRadius() const{return radius;}
+  double getXvector();
+  double getYvector();
 
   bool changeScreen();
   bool loose();
   void draw();
+
 
   String toString();
 };
