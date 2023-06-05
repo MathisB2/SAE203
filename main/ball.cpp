@@ -1,13 +1,21 @@
 #include "ball.h"
 
 Ball::Ball()
-    :position(Vector(screenX/2.0,screenY/2.0)), direction(Vector(.5,.5))
+    :position(Vector(screenX/2.0,screenY/2.0)), direction(Vector(.5,.5)), speed(5), radius(2)
 {}
 
-Ball::Ball(string ballInfo)
+Ball::Ball(String ballInfo)
     :position(Vector(0,0)), direction(Vector(.5,.5))
 {
+  //ballInfo.substring()
+}
 
+String Ball::toString()
+{
+  String posStr = String(position.getX())+";"+String(position.getY());
+  String dirStr = String(direction.getX())+";"+String(direction.getY());
+
+  return "Ball;"+posStr+";"+dirStr+";"+speed+";"+radius;
 }
 
 void Ball::move(double delta)

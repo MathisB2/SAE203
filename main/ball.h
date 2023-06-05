@@ -3,10 +3,9 @@
 #define screenX 120
 #define screenY 200
 
-#include <string>
+#include <String.h>
+#include <Arduino.h>
 #include "vector.h"
-
-using namespace std;
 
 class Ball
 {
@@ -17,8 +16,9 @@ private:
     double radius;
 public:
     Ball();
-    Ball(string);
+    Ball(String);
     void move(double);
+    String toString();
     bool changeScreen();
     bool loose();
 };

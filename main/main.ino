@@ -3,6 +3,7 @@
 #include "network.h"
 #include "point.h"
 #include "bar.h"
+#include "ball.h"
 #include "score.h"
 #include <string>
 #include <SPI.h>
@@ -54,10 +55,8 @@ void IRAM_ATTR buttonB() {  //function linked to an interruption on button B
     display.setRotation(1);
   }
 }
-
 void setup() {
   Serial.begin(115200);
-
   display.begin(0x3C, true);
   display.display();
   delay(1000);
