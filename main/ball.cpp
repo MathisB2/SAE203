@@ -10,7 +10,7 @@ extern int screenWidth, screenHeight;
 extern Bar playerBar, topBar, bottomBar, goalBar;
 
 Ball::Ball()
-  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(.5, .5)), speed(100), radius(20) {}
+  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(.5, .5)), speed(100), radius(5) {}
 
 Ball::Ball(String ballInfo)
     :position(Vector(0, 0)), direction(Vector(.5, .5)) {
@@ -57,9 +57,10 @@ void Ball::move(double delta) {
   }
 
   if (switchX) {
-    direction.setY(direction.getY() * -1);
+    direction.setX(direction.getX() * -1);
+    speed += 1;
   }
-  if ((position.getY()-radius <= 0 && direction.getY() >= 0)|| (position.getY()+radius >= screenWidth && direction.getY() >0)) {
+  if ((position.getY()-radius <= 0 && direction.getY() < 0)|| (position.getY()+radius >= screenWidth && direction.getY() >0)) {
     direction.setY(direction.getY() * -1);
   }
 }
