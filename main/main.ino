@@ -210,6 +210,7 @@ void loop() {
 
         else if (b->loose()) {
           n.sendMessage("fail");
+          score.fail();
           if (score.checkForEnd()) {
             gameStatus = 4;
           }
@@ -234,6 +235,7 @@ void loop() {
 
     if (gameStatus == 4) {  //end menu with restart and quit options --------------------------------------------------
       score.displayEndMenu();
+      display.display();
     }
 
   } else {  //connection lost

@@ -52,7 +52,7 @@ void Ball::move(double delta) {
   position += direction * speed * delta;
   bool switchX = false;
 
-  if (playerBar.isCollidedBy(*this)) {
+  if (playerBar.isCollidedBy(*this) && direction.getX() < 0) {
     switchX = !switchX;
   }
 

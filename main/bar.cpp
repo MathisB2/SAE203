@@ -77,7 +77,7 @@ void Bar::resetLocation() {
 
 bool Bar::isCollidedBy(Ball& b) {
   bool bounceX = b.getX() - b.getRadius() <= p.X;
-  bool bounceY = b.getY()+ b.getRadius() >= p.Y - length/2 && b.getY() - b.getRadius() <= p.Y + length/2;
+  bool bounceY = (b.getY() + b.getRadius() >= p.Y - length/2 && b.getY() + b.getRadius() <= p.Y + length/2) || (b.getY() - b.getRadius() >= p.Y + length/2 && b.getY() - b.getRadius() >= p.Y - length/2);
 
   return bounceX && bounceY;
 }
