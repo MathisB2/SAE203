@@ -10,7 +10,10 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
+#include <vector>
 Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
+#include <iostream>
+using namespace std;
 
 #define BUTTON_A 15
 #define BUTTON_B 32
@@ -34,6 +37,8 @@ Bar topBar(screenHeight, 0, 0);
 Bar bottomBar(screenHeight, 0, screenWidth);
 Bar goalBar(screenWidth, 0, 0, false, false, true);
 Bar portalBar(screenWidth, 0, 0, false, false, false);
+/// pour plusieurs balles: vector<Ball> ballArray;
+Ball* b;
 
 Score score(10);
 String m;  //String used to read messages (need trim)
@@ -55,8 +60,27 @@ void IRAM_ATTR buttonB() {  //function linked to an interruption on button B
     display.setRotation(1);
   }
 }
+
+
+void startGame() {
+  b = new Ball();
+  display.setRotation(0);
+
+  score.resetScore();
+  playerBar.resetLocation();
+  n.sendMessage("start");
+  gameStatus = 3;  //start the game
+}
+
+
+
+
+
 void setup() {
   Serial.begin(115200);
+
+
+
   display.begin(0x3C, true);
   display.display();
   delay(1000);
@@ -83,7 +107,13 @@ void setup() {
   joystickMiddle = analogRead(A4);
 }
 
+unsigned long currentTime = millis();
+
 void loop() {
+    double delta = (double)(millis() - currentTime)/1000;
+    currentTime = millis();
+
+
   if (gameStatus == 0) {  //starting connection ---------------------------------------------------------------
     if (player == "A") {  //player A is the host
       n.createServer(SSID, PASSWORD, 80);
@@ -146,62 +176,66 @@ void loop() {
       }
 
 
-    
-        if (digitalRead(BUTTON_A)==0) {
-          //made a function to reset all necessary variables to restart a game (need to be used in 2 times)
-          score.resetScore();
-          playerBar.resetLocation();
-          Serial.println("Message envoi");
-          n.sendMessage("start");
-          Serial.println("Message envoyé");
-          gameStatus = 3;  //start the game
-        }
+
+      if (digitalRead(BUTTON_A) == 0) {
+        //made a function to reset all necessary variables to restart a game (need to be used in 2 times)
+        startGame();
       }
+    }
 
 
-      if (gameStatus == 3) {  //in game -----------------------------------------------------------------------------
+    if (gameStatus == 3) {  //in game -----------------------------------------------------------------------------
 
-        if (n.clientAvailable()) {
-          if (n.getMessage() == "fail") {
-            score.win();
-            if (score.checkForEnd()) {
-              gameStatus = 3;
-            }
+      if (n.clientAvailable()) {
+        if (n.getMessage() == "fail") {
+          score.win();
+          if (score.checkForEnd()) {
+            gameStatus = 3;
           }
         }
-
-        /*
-      ball.updatePosition();
-      ball.display();
-      bar.display();
-      */
-
-
-        display.clearDisplay();
-        playerBar.updateLocation();
-        playerBar.drawBar();
-        topBar.drawBar();
-        bottomBar.drawBar();
-        goalBar.drawBar();
-
-        score.displayScore();
-
-        display.display();
       }
 
-      if (gameStatus == 4) {  //end menu with restart and quit options --------------------------------------------------
-        score.displayEndMenu();
-      }
-
-    } 
-    else {  //connection lost
       display.clearDisplay();
-      display.setRotation(1);
-      display.setTextSize(1);
-      display.setCursor(12, 28);
-      display.println("Connection lost !");
+
+      //for(Ball b:ballArray){
+        if(b != nullptr)
+        {
+          b->move(delta);
+          Serial.println(b->toString());
+          b->draw();
+          if(b->changeScreen())
+          {
+            n.sendMessage(b->toString());
+            //delete(b);
+          }
+        }
+       
+        
+      //}
+
+      playerBar.updateLocation();
+      playerBar.drawBar();
+      topBar.drawBar();
+      bottomBar.drawBar();
+      goalBar.drawBar();
+
+      score.displayScore();
+
       display.display();
-      delay(1500);
-      gameStatus = 0;
     }
+
+    if (gameStatus == 4) {  //end menu with restart and quit options --------------------------------------------------
+      score.displayEndMenu();
+    }
+
+  } else {  //connection lost
+    display.clearDisplay();
+    display.setRotation(1);
+    display.setTextSize(1);
+    display.setCursor(12, 28);
+    display.println("Connection lost !");
+    display.display();
+    delay(1500);
+    gameStatus = 0;
   }
+}

@@ -1,6 +1,7 @@
 #ifndef BAR_H
 #define BAR_H
 #include"point.h"
+#include"ball.h"
 #include <WiFi.h>
 
 class Bar
@@ -19,7 +20,7 @@ public:
 
     bool isDisplayed();
     bool canCollide();
-    // int isCollidedBy(Ball);
+    bool isCollidedBy(Ball&);
     void drawBar();
     void updateLocation();
     void resetLocation();

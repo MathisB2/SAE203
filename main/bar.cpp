@@ -75,13 +75,12 @@ void Bar::resetLocation() {
 
 
 
-/*
-int isCollidedBy(Ball b) {
+bool Bar::isCollidedBy(Ball& b) {
   //return 0 if not collided by the ball
   //return 1 if horizontal and collided <=> need to reverse yVector
   //return 2 if vertical and collided <=> need to reverse xVector
   if (this->collide) {
-    Point cursor();
+    Point cursor;
 
     if (this->horizontal == true) {
       cursor.X = b.getX();
@@ -89,7 +88,7 @@ int isCollidedBy(Ball b) {
       cursor.Y = this->p.Y;
       if (cursor.X >= this->p.X && cursor.X < this->p.X + this->length) {
         if (cursor.distanceTo(b.getX(), b.getY()) < b.getRadius()) {
-          return 1;
+          return true;
         }
       }
     } else {
@@ -99,10 +98,10 @@ int isCollidedBy(Ball b) {
 
       if (cursor.Y >= this->p.Y && cursor.Y < this->p.Y + this->length) {
         if (cursor.distanceTo(b.getX(), b.getY()) < b.getRadius()) {
-          return 2;
+          return true;
         }
       }
     }
   }
-  return 0;
-}*/
+  return false;
+}
