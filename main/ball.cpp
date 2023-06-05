@@ -18,6 +18,7 @@ Ball::Ball(String ballInfo)
   direction = Vector(-getSplitedString(ballInfo, 3), getSplitedString(ballInfo, 4));
   speed = getSplitedString(ballInfo, 5);
   radius = getSplitedString(ballInfo, 6);
+  move(.05);
 }
 
 String Ball::toString() {

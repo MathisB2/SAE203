@@ -38,7 +38,7 @@ Bar bottomBar(screenHeight, 0, screenWidth);
 Bar goalBar(screenWidth, 0, 0, false, false, true);
 Bar portalBar(screenWidth, 0, 0, false, false, false);
 /// pour plusieurs balles: vector<Ball> ballArray;
-Ball* b;
+Ball* b = nullptr;
 
 Score score(10);
 String m;  //String used to read messages (need trim)
@@ -205,11 +205,12 @@ void loop() {
         if(b != nullptr)
         {
           b->move(delta);
-          Serial.println(b->toString());
+          //Serial.println(b->toString());
           b->draw();
           if(b->changeScreen())
           {
             delete(b);
+            b = nullptr;
             n.sendMessage(b->toString());
           }
         }
