@@ -10,15 +10,14 @@ extern int screenWidth, screenHeight;
 extern Bar playerBar, topBar, bottomBar, goalBar;
 
 Ball::Ball()
-  : position(Vector(screenWidth / 2.0, screenHeight / 2.0)), direction(Vector(.5, .5)), speed(100), radius(20) {}
+  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(.5, .5)), speed(100), radius(20) {}
 
 Ball::Ball(String ballInfo)
     :position(Vector(0, 0)), direction(Vector(.5, .5)) {
   position = Vector(getSplitedString(ballInfo, 1), getSplitedString(ballInfo, 2));
-  direction = Vector(-getSplitedString(ballInfo, 3), getSplitedString(ballInfo, 4));
+  direction = Vector(getSplitedString(ballInfo, 3), -getSplitedString(ballInfo, 4));
   speed = getSplitedString(ballInfo, 5);
   radius = getSplitedString(ballInfo, 6);
-  move(.05);
 }
 
 String Ball::toString() {
@@ -52,7 +51,6 @@ double Ball::getSplitedString(String s, int indexOfArray) {
 void Ball::move(double delta) {
   position += direction * speed * delta;
   bool switchX = false;
-  bool switchY = false;
 
   if (playerBar.isCollidedBy(*this)) {
     switchX = !switchX;
@@ -60,23 +58,17 @@ void Ball::move(double delta) {
   if (goalBar.isCollidedBy(*this)) {  //loose
     switchX = !switchX;
   }
-  if (topBar.isCollidedBy(*this)) {
-    switchY = !switchY;
-  }
-  if (bottomBar.isCollidedBy(*this)) {
-    switchY = !switchY;
-  }
 
 
   if (switchX) {
     direction.setY(direction.getY() * -1);
   }
-  if (switchY) {
+  if (position.getY()-radius <= 0 || position.getY()+radius >= screenWidth) {
     direction.setX(direction.getX() * -1);
   }
 }
 bool Ball::changeScreen() {
-  return position.getX()-radius*2 > screenHeight;
+  return position.getX()-radius*2 > screenHeight && direction.getX() > 0;
 }
 
 bool Ball::loose() {

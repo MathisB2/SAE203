@@ -79,8 +79,6 @@ void startGame() {
 void setup() {
   Serial.begin(115200);
 
-
-
   display.begin(0x3C, true);
   display.display();
   delay(1000);
@@ -174,9 +172,6 @@ void loop() {
           gameStatus = 3;
         }
       }
-
-
-
       if (digitalRead(BUTTON_A) == 0) {
         //made a function to reset all necessary variables to restart a game (need to be used in 2 times)
         startGame();
@@ -194,8 +189,9 @@ void loop() {
           if (score.checkForEnd()) {
             gameStatus = 3;
           }
-        }else if(m.substring(0,3).equals("Ball")){
+        }else if(m.substring(0,4).equals("Ball")){
           b = new Ball(m);
+          Serial.println("new Ball");
         }
       }
 
@@ -205,13 +201,13 @@ void loop() {
         if(b != nullptr)
         {
           b->move(delta);
-          //Serial.println(b->toString());
+          Serial.println(b->toString());
           b->draw();
           if(b->changeScreen())
           {
+            n.sendMessage(b->toString());
             delete(b);
             b = nullptr;
-            n.sendMessage(b->toString());
           }
         }
        
