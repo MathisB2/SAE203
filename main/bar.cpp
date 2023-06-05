@@ -74,10 +74,36 @@ void Bar::resetLocation() {
 }
 
 
-
+/*
 bool Bar::isCollidedBy(Ball& b) {
   bool bounceX = b.getX() - b.getRadius() <= p.X;
   bool bounceY = (b.getY() + b.getRadius() >= p.Y - length/2 && b.getY() + b.getRadius() <= p.Y + length/2) || (b.getY() - b.getRadius() >= p.Y + length/2 && b.getY() - b.getRadius() >= p.Y - length/2);
 
   return bounceX && bounceY;
+}*/
+
+
+
+bool Bar::isCollidedBy(Ball& b) {
+  Point temp;
+  Point ball(b.getX(),b.getY());
+  int barX=this->p.X;
+  int barY=this->p.Y;
+ if(this->horizontal){
+   for(int x=barX;x<barX+this->length;x++){
+     temp=Point(x,barY);
+     if(temp.distanceTo(ball)<b.getRadius()){
+       return true;
+     }
+   }
+ }else{
+   for(int y=barY;y<barY+this->length;y++){
+     temp=Point(barX,y);
+     if(temp.distanceTo(ball)<b.getRadius()){
+       return true;
+     }
+   }
+ }
+
+  return false;
 }
