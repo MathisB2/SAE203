@@ -19,8 +19,6 @@ public:
   void displayScore();
   void displayEndMenu();
   bool checkForEnd();
-
-  
 };
 
 

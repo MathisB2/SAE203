@@ -11,14 +11,9 @@
 #include <Adafruit_SH110X.h>
 Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 
-
-
-
-
 #define BUTTON_A 15
 #define BUTTON_B 32
 #define BUTTON_C 14
-
 
 #define SSID "pongServer"
 #define PASSWORD "12345678"
@@ -33,7 +28,6 @@ int joystickSensivity = 350;  //value in % (default: 350)
 int screenWidth = 119;
 int screenHeight = 64;
 
-
 Bar playerBar(20, 5, 50, false);
 Bar topBar(screenHeight, 0, 0);
 Bar bottomBar(screenHeight, 0, screenWidth);
@@ -42,34 +36,6 @@ Bar portalBar(screenWidth, 0, 0, false, false, false);
 
 Score score(10);
 String m;  //String used to read messages (need trim)
-
-
-
-void IRAM_ATTR buttonA() {  //function linked to an interruption on button A
-
-  /*
-  if (gameStatus == 2) {  //ready to start game
-    if (n.clientConnected()) {
-      //made a function to reset all necessary variables to restart a game (need to be used in 2 times)
-      score.resetScore();
-      playerBar.resetLocation();
-      Serial.println("Message envoi");
-      n.sendMessage("start");
-      Serial.println("Message envoyé");
-      gameStatus = 3;  //start the game
-    }
-
-}
-
-
-else*/ if (gameStatus == 4) {  //end of the game : button restart
-  //made a function to reset all necessary variables to restart a game (need to be used in 2 times)
-  score.resetScore();
-  playerBar.resetLocation();
-  gameStatus = 3;
-}
-}
-
 
 void IRAM_ATTR buttonB() {  //function linked to an interruption on button B
   if (gameStatus <= 2) {    //switchPlayer
@@ -88,10 +54,6 @@ void IRAM_ATTR buttonB() {  //function linked to an interruption on button B
     display.setRotation(1);
   }
 }
-
-
-
-
 
 void setup() {
   Serial.begin(115200);
@@ -122,8 +84,6 @@ void setup() {
   joystickMiddle = analogRead(A4);
 }
 
-
-
 void loop() {
   if (gameStatus == 0) {  //starting connection ---------------------------------------------------------------
     if (player == "A") {  //player A is the host
@@ -136,12 +96,7 @@ void loop() {
     }
   }
 
-  else if (gameStatus == 1) {  //waiting for ready message -----------------------------------------------------
-                               /*
-    Serial.print("Poblème ici : clientConnected() : ");
-    Serial.print(n.clientConnected());
-    Serial.print(" clientAvailable() : ");
-    Serial.println(n.clientAvailable());*/
+  else if (gameStatus == 1) {  //waiting for ready message ----------------------------------------------------
     if (n.clientConnected()) {
       if (player == "A") {
         //wait for ready message
@@ -167,12 +122,11 @@ void loop() {
 
 
 
-  else if (n.clientConnected() && gameStatus > 1) {  //need client to be connected
-
+  else if (n.clientConnected() && gameStatus > 1) {
     if (gameStatus == 2) {  //start interface (A to start) -----------------------------------------------------
-
       display.clearDisplay();
       display.setCursor(0, 0);
+
       if (player == "A") {
         display.println("PLAYER A : host\n\n");
       } else if (player == "B") {
@@ -236,19 +190,12 @@ void loop() {
         display.display();
       }
 
-
-
       if (gameStatus == 4) {  //end menu with restart and quit options --------------------------------------------------
         score.displayEndMenu();
       }
 
-
-
-
-
-
-
-    } else {  //connection lost
+    } 
+    else {  //connection lost
       display.clearDisplay();
       display.setRotation(1);
       display.setTextSize(1);

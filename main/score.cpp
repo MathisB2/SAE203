@@ -7,11 +7,8 @@
 extern Adafruit_SH1107 display;
 extern int screenWidth, screenHeight;
 
-
 Score::Score():Score(10){
 }
-
-
 
 Score::Score(int endAt){
   this->resetScore();
@@ -19,13 +16,9 @@ Score::Score(int endAt){
   this->displayPosition=0;
 }
 
-
-
-
 void Score::win(){
   this->self++;
 }
-
 
 void Score::fail(){
   this->ennemy++;
