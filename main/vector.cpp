@@ -28,3 +28,23 @@ Vector& operator/ (Vector& v1, double value)
     v1.setY(v1.getY()/value);
     return v1;
 }
+
+Vector& operator* (Vector& v1, double value)
+{
+    v1.setX(v1.getX()*value);
+    v1.setY(v1.getY()*value);
+    return v1;
+}
+
+Vector& operator+ (Vector& v1, const Vector& v2)
+{
+    v1.setX(v1.getX()+v2.getX());
+    v1.setY(v1.getY()+v2.getY());
+    return v1;
+}
+Vector& operator+= (Vector& v1, const Vector& v2)
+{
+    v1.setX(v1.getX()+v2.getX());
+    v1.setY(v1.getY()+v2.getY());
+    return v1;
+}
