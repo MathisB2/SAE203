@@ -1,9 +1,6 @@
 #ifndef NETWORK_H
 #define NETWORK_H
-
 #include <WiFi.h>
-
-using namespace std;
 
 class Network
 {
@@ -16,7 +13,10 @@ public:
     void createServer(const char* ssid, const char* password, int port);
     void sendMessage(String message);
     String getMessage();
+    int clientAvailable();
     int clientConnected();
+
+    int getClientNumber();
 };
 
 #endif // NETWORK_H
