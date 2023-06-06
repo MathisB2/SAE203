@@ -23,6 +23,8 @@ public:
   bool isDisplayed();
   bool canCollide();
   bool isCollidedBy(Ball&);
+  Vector& getDirection() {return direction;}
+  double getSpeed() {return speed;}
   void drawBar();
   void updateLocation(double);
   void resetLocation();

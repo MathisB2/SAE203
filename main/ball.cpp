@@ -1,6 +1,8 @@
+#include "Arduino.h"
 #include "ball.h"
 #include "bar.h"
 #include "point.h"
+#include <cmath>
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -12,15 +14,9 @@ extern Bar playerBar, topBar, bottomBar, goalBar, portalBar;
 
 Ball::Ball()
   : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), speed(20), radius(5), inPortal(false) {
-  double x = (analogRead(A5) - joystickMiddle) / (float)joystickRange;
-  double y = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
-  Vector newDirection(x, y);
-  
-  while (newDirection.magnitude <= 2) {
-    double x = (analogRead(A5) - joystickMiddle) / (float)joystickRange;
-    double y = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
-    newDirection = Vector(x, y);
-  }
+  delay(500);
+  int randomPos = random(360);
+  Vector newDirection(cos(radians(randomPos)), cos(radians(randomPos)));
 
   direction = newDirection;
 }
@@ -63,14 +59,13 @@ double Ball::getSplitedString(String s, int indexOfArray) {
 }
 
 void Ball::move(double delta) {
-
   if(position.getY()<topBar.getY()){
     position.setY(topBar.getY());
   }
   if(position.getY()>bottomBar.getY()){
     position.setY(bottomBar.getY());
   }
-   if(position.getX()<goalBar.getX()){
+  if(position.getX()<goalBar.getX()){
     position.setX(bottomBar.getX());
   }
 
@@ -79,12 +74,16 @@ void Ball::move(double delta) {
   bool switchY = false;
 
   if (playerBar.isCollidedBy(*this)) {
+    Vector barVector = playerBar.getDirection() * playerBar.getSpeed();
+    Vector ballVector = direction * speed;
+    Vector newDirection = barVector + ballVector;
+
+    direction = newDirection/newDirection.magnitude;
     switchX = !switchX;
   }
   if (topBar.isCollidedBy(*this)) {
     switchY = !switchY;
-  }
-  if (bottomBar.isCollidedBy(*this)) {
+  }else if (bottomBar.isCollidedBy(*this)) {
     switchY = !switchY;
   }
 
@@ -99,10 +98,7 @@ void Ball::move(double delta) {
     position += direction * speed * delta;
     speed+=1;
   }
-
 }
-
-
 
 bool Ball::changeScreen() {
   return position.getX() - radius > screenHeight && direction.getX() > 0;
@@ -126,12 +122,4 @@ void Ball::draw() {
       }
     }
   }
-}
-
-double Ball::getXvector() {
-  return direction.getX();
-}
-
-double Ball::getYvector() {
-  return direction.getY();
 }

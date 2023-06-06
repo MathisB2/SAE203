@@ -21,8 +21,7 @@ public:
   double getX() const{return position.getX();}
   double getY() const{return position.getY();}
   double getRadius() const{return radius;}
-  double getXvector();
-  double getYvector();
+  Vector& getDirection(){return direction;}
 
   bool changeScreen();
   bool loose();
