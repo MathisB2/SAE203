@@ -5,6 +5,7 @@
 #include "bar.h"
 #include "ball.h"
 #include "score.h"
+#include "joystick.h"
 #include <string>
 #include <SPI.h>
 #include <Wire.h>
@@ -24,6 +25,8 @@ using namespace std;
 #define PASSWORD "12345678"
 
 Network n;
+Joystick j;
+
 int gameStatus = 0;  //0=connection menu, 1=waiting, 2=ready, 3=in game, 4=end menu
 String player = "A";
 int joystickMiddle;
@@ -64,7 +67,6 @@ void IRAM_ATTR buttonB() {  //function linked to an interruption on button B
 
 void startGame() {
   deleteBalls();
-  ballArray.push_back(new Ball());
   ballArray.push_back(new Ball());
   display.setRotation(0);
 
