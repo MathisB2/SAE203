@@ -97,7 +97,6 @@ void setup() {
 
   playerBar.resetLocation();
 
-
   pinMode(BUTTON_A, INPUT_PULLUP);
   pinMode(BUTTON_B, INPUT_PULLUP);
   //pinMode(BUTTON_C, INPUT_PULLUP);
@@ -214,18 +213,18 @@ void loop() {
           b->move(delta);
           Serial.println(b->toString());
           b->draw();
+          Vector& ballDirection = b->getDirection();
 
-
-          if (b->inPortal && b->getXvector() < 0) {  //if the ball comes from the other screen
+          if (b->inPortal && ballDirection.getX() < 0) {  //if the ball comes from the other screen
             b->inPortal = false;
           }
-          if (b->inPortal && !portalBar.isCollidedBy(*b) && b->getXvector() > 0) {  //if the ball get out of the screen
+          if (b->inPortal && !portalBar.isCollidedBy(*b) && ballDirection.getX() > 0) {  //if the ball get out of the screen
             Serial.print("Truc : ");
-            Serial.print(b->getXvector());
+            Serial.print(ballDirection.getX());
             delete (b);
             ballArray.remove(b);
 
-          } else if (!b->inPortal && portalBar.isCollidedBy(*b) && b->getXvector() > 0) {  //if the edge of the ball starts touching the screen limit
+          } else if (!b->inPortal && portalBar.isCollidedBy(*b) && ballDirection.getX() > 0) {  //if the edge of the ball starts touching the screen limit
             n.sendMessage(b->toString());
             b->inPortal = true;
           } else if (goalBar.isCollidedBy(*b)) {
@@ -241,9 +240,6 @@ void loop() {
           }
         }
       }
-
-
-
 
       playerBar.updateLocation(delta);
       playerBar.drawBar();

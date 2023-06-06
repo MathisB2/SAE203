@@ -54,15 +54,13 @@ void Bar::drawBar() {
 
 void Bar::updateLocation(double delta) {
   float move = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
-  if (move < 0.08 && move > -0.08) {
-    move = 0;
-  }else if(move > 1)
+  if(move > 1)
     move = 1;
   else if (move <-1)
     move = -1;
-  
+  else
+    move = 0;
   direction = Vector(0,move);
-  Serial.println(move);
   this->p.Y += move * speed * delta;
   if (this->p.Y < 0) {
     this->p.Y = 0;
