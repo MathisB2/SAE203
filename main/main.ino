@@ -207,7 +207,6 @@ void loop() {
       for (Ball* b : ballArray) {
         if (b != nullptr) {
           b->move(delta);
-          Serial.println(b->toString());
           b->draw();
           Vector& ballDirection = b->getDirection();
 
@@ -215,8 +214,6 @@ void loop() {
             b->inPortal = false;
           }
           if (b->inPortal && !portalBar.isCollidedBy(*b) && ballDirection.getX() > 0) {  //if the ball get out of the screen
-            Serial.print("Truc : ");
-            Serial.print(ballDirection.getX());
             delete (b);
             ballArray.remove(b);
 

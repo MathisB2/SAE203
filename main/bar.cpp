@@ -56,7 +56,7 @@ void Bar::drawBar() {
 void Bar::updateLocation(double delta) {
   float move = j.readY(false);
   direction = Vector(0,move);
-  
+  Serial.println(move);
   this->p.Y += move * speed * delta;
   if (this->p.Y < 0) {
     this->p.Y = 0;

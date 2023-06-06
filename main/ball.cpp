@@ -18,6 +18,7 @@ Ball::Ball()
   : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), speed(20), radius(5), inPortal(false) {
     delay(500);
   int randomPos = random(360);
+  Serial.print(randomPos);
   Vector newDirection(cos(radians(randomPos)), cos(radians(randomPos)));
 
   direction = newDirection;
