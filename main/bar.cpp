@@ -10,7 +10,9 @@ extern int screenWidth, screenHeight;
 
 
 
-Bar::Bar(int length, int x, int y, bool horizontal, bool displayed, bool collide) {
+Bar::Bar(int length, int x, int y, bool horizontal, bool displayed, bool collide)
+  :speed(100)
+{
   this->length = length;
   this->p = Point(x, y);
   this->horizontal = horizontal;
@@ -50,17 +52,18 @@ void Bar::drawBar() {
 }
 
 
-void Bar::updateLocation() {
+void Bar::updateLocation(double delta) {
   float move = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
-  if (move < 0.05 && move > -0.05) {
+  if (move < 0.08 && move > -0.08) {
     move = 0;
-  } else if (move > 1) {
+  }else if(move > 1)
     move = 1;
-  } else if (move < -1) {
+  else if (move <-1)
     move = -1;
-  }
-
-  this->p.Y += move * (joystickSensivity / 100.0);
+  
+  direction = Vector(0,move);
+  Serial.println(move);
+  this->p.Y += move * speed * delta;
   if (this->p.Y < 0) {
     this->p.Y = 0;
   } else if (this->p.Y > screenWidth - this->length) {
@@ -72,43 +75,6 @@ void Bar::updateLocation() {
 void Bar::resetLocation() {
   this->p.Y = screenHeight - (int)(this->length / 2);
 }
-
-
-/*
-bool Bar::isCollidedBy(Ball& b) {
-  bool bounceX = b.getX() - b.getRadius() <= p.X;
-  bool bounceY = (b.getY() + b.getRadius() >= p.Y - length/2 && b.getY() + b.getRadius() <= p.Y + length/2) || (b.getY() - b.getRadius() >= p.Y + length/2 && b.getY() - b.getRadius() >= p.Y - length/2);
-
-  return bounceX && bounceY;
-}
-
-
-
-bool Bar::isCollidedBy(Ball& b) {
-  Point temp;
-  Point ball(b.getX(),b.getY());
-  int barX=this->p.X;
-  int barY=this->p.Y;
- if(this->horizontal){
-   for(int x=barX;x<barX+this->length;x++){
-     temp=Point(x,barY);
-     if(temp.distanceTo(ball)<b.getRadius()){
-       return true;
-     }
-   }
- }else{
-   for(int y=barY;y<barY+this->length;y++){
-     temp=Point(barX,y);
-     if(temp.distanceTo(ball)<b.getRadius()){
-       return true;
-     }
-   }
- }
-
-  return false;
-}*/
-
-
 
 bool Bar::isCollidedBy(Ball& b) {
 

@@ -10,7 +10,7 @@ extern int screenWidth, screenHeight;
 extern Bar playerBar, topBar, bottomBar, goalBar,portalBar;
 
 Ball::Ball()
-  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(-.5, -.5)), speed(50), radius(5),inPortal(false) {}
+  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(-.5, -.5)), speed(10), radius(20),inPortal(false) {}
 
 Ball::Ball(String ballInfo)
     :position(Vector(0, 0)), direction(Vector(.5, .5)) {

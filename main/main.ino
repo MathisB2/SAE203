@@ -231,7 +231,7 @@ void loop() {
 
 
 
-      playerBar.updateLocation();
+      playerBar.updateLocation(delta);
       playerBar.drawBar();
       topBar.drawBar();
       bottomBar.drawBar();

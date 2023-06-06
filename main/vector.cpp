@@ -27,6 +27,7 @@ double Vector::magnitudeOf(double x, double y)
 
 Vector Vector::operator/ (double value)
 {
+    if(value == 0){return Vector();}
     return Vector(getX()/value, getY()/value);
 }
 
