@@ -114,6 +114,12 @@ void setup() {
 unsigned long currentTime = millis();
 
 void loop() {
+
+  Serial.print("Joystick : X");
+  Serial.print(analogRead(A5));
+  Serial.print("        Y ");
+  Serial.println(analogRead(A4));
+
   double delta = (double)(millis() - currentTime) / 1000;
   currentTime = millis();
 
