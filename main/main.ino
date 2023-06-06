@@ -187,7 +187,7 @@ void loop() {
             gameStatus = 4;
           }
         } else if (m.substring(0, 4).equals("Ball")) {
-          b = new Ball());
+          b = new Ball();
         }
       }
 
