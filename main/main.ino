@@ -11,7 +11,6 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SH110X.h>
 #include <vector>
-#include <list>
 Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 #include <iostream>
 using namespace std;
@@ -39,7 +38,7 @@ Bar topBar(screenHeight * 2, 0, 0);
 Bar bottomBar(screenHeight * 2, 0, screenWidth);
 Bar goalBar(screenWidth, 0, 0, false, false, true);
 Bar portalBar(screenWidth, screenHeight, 0, false, false, true);
-list<Ball*> ballArray;
+Ball* b = nullptr;
 
 Score score(10);
 String m;  //String used to read messages (need trim)
@@ -64,8 +63,9 @@ void IRAM_ATTR buttonB() {  //function linked to an interruption on button B
 
 
 void startGame() {
-  deleteBalls();
-  ballArray.push_back(new Ball());
+  if (b != nullptr)
+    delete b;
+  b = new Ball());
   display.setRotation(0);
 
   score.resetScore();
@@ -73,14 +73,6 @@ void startGame() {
   n.sendMessage("start");
   gameStatus = 3;  //start the game
 }
-
-void deleteBalls(){
-  for(Ball* b: ballArray){
-    delete(b);
-  }
-  ballArray.clear();
-}
-
 
 void setup() {
   Serial.begin(115200);
@@ -195,40 +187,35 @@ void loop() {
             gameStatus = 4;
           }
         } else if (m.substring(0, 4).equals("Ball")) {
-          ballArray.push_back(new Ball(m));
-          Serial.println("new Ball");
+          b = new Ball());
         }
       }
 
       display.clearDisplay();
 
-      for (Ball* b : ballArray) {
-        if (b != nullptr) {
-          b->move(delta);
-          b->draw();
-          Vector& ballDirection = b->getDirection();
+      if (b != nullptr) {
+        b->move(delta);
+        b->draw();
+        Vector& ballDirection = b->getDirection();
 
-          if (b->inPortal && ballDirection.getX() < 0) {  //if the ball comes from the other screen
-            b->inPortal = false;
+        if (b->inPortal && ballDirection.getX() < 0) {  //if the ball comes from the other screen
+          b->inPortal = false;
+        }
+        if (b->inPortal && !portalBar.isCollidedBy(*b) && ballDirection.getX() > 0) {  //if the ball get out of the screen
+          delete (b);
+          b = nullptr;
+        } else if (!b->inPortal && portalBar.isCollidedBy(*b) && ballDirection.getX() > 0) {  //if the edge of the ball starts touching the screen limit
+          n.sendMessage(b->toString());
+          b->inPortal = true;
+        } else if (goalBar.isCollidedBy(*b)) {
+          n.sendMessage("fail");
+          score.fail();
+          if (score.checkForEnd()) {
+            gameStatus = 4;
           }
-          if (b->inPortal && !portalBar.isCollidedBy(*b) && ballDirection.getX() > 0) {  //if the ball get out of the screen
-            delete (b);
-            ballArray.remove(b);
 
-          } else if (!b->inPortal && portalBar.isCollidedBy(*b) && ballDirection.getX() > 0) {  //if the edge of the ball starts touching the screen limit
-            n.sendMessage(b->toString());
-            b->inPortal = true;
-          } else if (goalBar.isCollidedBy(*b)) {
-            n.sendMessage("fail");
-            score.fail();
-            if (score.checkForEnd()) {
-              gameStatus = 4;
-            }
-
-            delete (b);
-            ballArray.remove(b);
-            ballArray.push_back(new Ball());
-          }
+          delete (b);
+          b = nullptr;
         }
       }
 
