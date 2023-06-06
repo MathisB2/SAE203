@@ -75,10 +75,10 @@ void Ball::move(double delta) {
   position += direction * speed * delta;
   bool switchX = false;
   bool switchY = false;
-  bool randomBounce=false;
+  bool randomBounce = false;
 
   if (playerBar.isCollidedBy(*this)) {
-    randomBounce=true;
+    randomBounce = true;
   }
   if (topBar.isCollidedBy(*this)) {
     switchY = !switchY;
@@ -88,11 +88,15 @@ void Ball::move(double delta) {
 
 
   if (randomBounce) {
-    direction.setX(1);
-    direction.setY(random(-5,5));
-  
-  }
-  else if (switchX) {
+
+    Vector newDirection;
+    newDirection.setX(1);
+    newDirection.setY(random(-5, 5));
+
+    direction = newDirection/newDirection.magnitude;
+
+
+  } else if (switchX) {
     direction.setX(direction.getX() * -1);
   }
 

@@ -26,7 +26,7 @@ public:
   Vector& getDirection() {return direction;}
   double getSpeed() {return speed;}
   void drawBar();
-  void updateLocation(double);
+  void updateLocation();
   void resetLocation();
 };
 
