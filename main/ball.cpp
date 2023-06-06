@@ -16,10 +16,10 @@ extern Joystick j;
 
 Ball::Ball()
   : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), speed(20), radius(5), inPortal(false) {
-    delay(500);
+  delay(500);
   int randomPos = random(360);
   Serial.print(randomPos);
-  Vector newDirection(cos(radians(randomPos)), cos(radians(randomPos)));
+  Vector newDirection(cos(radians(randomPos)), sin(radians(randomPos)));
 
   direction = newDirection;
 }
@@ -62,44 +62,43 @@ double Ball::getSplitedString(String s, int indexOfArray) {
 }
 
 void Ball::move(double delta) {
-  if(position.getY()<topBar.getY()){
+  if (position.getY() < topBar.getY()) {
     position.setY(topBar.getY());
   }
-  if(position.getY()>bottomBar.getY()){
+  if (position.getY() > bottomBar.getY()) {
     position.setY(bottomBar.getY());
   }
-  if(position.getX()<goalBar.getX()){
+  if (position.getX() < goalBar.getX()) {
     position.setX(bottomBar.getX());
   }
 
   position += direction * speed * delta;
   bool switchX = false;
   bool switchY = false;
+  bool randomBounce=false;
 
   if (playerBar.isCollidedBy(*this)) {
-    switchX = !switchX;
+    randomBounce=true;
   }
   if (topBar.isCollidedBy(*this)) {
     switchY = !switchY;
-  }else if (bottomBar.isCollidedBy(*this)) {
+  } else if (bottomBar.isCollidedBy(*this)) {
     switchY = !switchY;
   }
 
-  if(switchX){
+
+  if (randomBounce) {
+    direction.setX(1);
+    direction.setY(random(-5,5));
+  
+  }
+  else if (switchX) {
     direction.setX(direction.getX() * -1);
-    Vector barVector = playerBar.getDirection() * playerBar.getSpeed()/6;
-    Vector ballVector = direction * speed;
-    Vector newDirection = barVector + ballVector;
-
-    direction = newDirection/newDirection.magnitude;
   }
-  if(switchY){
+
+
+  if (switchY) {
     direction.setY(direction.getY() * -1);
-  }
-
-  if(switchX || switchY){
-    position += direction * speed * delta;
-    speed+=1;
   }
 }
 
