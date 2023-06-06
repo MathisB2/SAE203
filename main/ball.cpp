@@ -2,6 +2,7 @@
 #include "ball.h"
 #include "bar.h"
 #include "point.h"
+#include "joystick.h"
 #include <cmath>
 #include <SPI.h>
 #include <Wire.h>
@@ -11,10 +12,11 @@ extern Adafruit_SH1107 display;
 extern int screenWidth, screenHeight;
 extern int joystickMiddle, joystickRange, joystickSensivity;
 extern Bar playerBar, topBar, bottomBar, goalBar, portalBar;
+extern Joystick j;
 
 Ball::Ball()
   : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), speed(20), radius(5), inPortal(false) {
-  delay(500);
+    delay(500);
   int randomPos = random(360);
   Vector newDirection(cos(radians(randomPos)), cos(radians(randomPos)));
 
@@ -74,11 +76,6 @@ void Ball::move(double delta) {
   bool switchY = false;
 
   if (playerBar.isCollidedBy(*this)) {
-    Vector barVector = playerBar.getDirection() * playerBar.getSpeed();
-    Vector ballVector = direction * speed;
-    Vector newDirection = barVector + ballVector;
-
-    direction = newDirection/newDirection.magnitude;
     switchX = !switchX;
   }
   if (topBar.isCollidedBy(*this)) {
@@ -89,6 +86,11 @@ void Ball::move(double delta) {
 
   if(switchX){
     direction.setX(direction.getX() * -1);
+    Vector barVector = playerBar.getDirection() * playerBar.getSpeed()/6;
+    Vector ballVector = direction * speed;
+    Vector newDirection = barVector + ballVector;
+
+    direction = newDirection/newDirection.magnitude;
   }
   if(switchY){
     direction.setY(direction.getY() * -1);
