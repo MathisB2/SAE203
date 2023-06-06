@@ -6,8 +6,8 @@
 
 Joystick::Joystick() {
   reset();
-  xRange = 1000;
-  yRange = 1000;
+  xRange = 900;
+  yRange = 900;
   deadZone = 0.05;
 }
 
@@ -20,9 +20,7 @@ double Joystick::readX(bool decimal) {
   } else if (move > 1){
     move = 1;
     mov=1;
-  }
-
-  else if (move < -1){
+  }else if (move < -1){
      move = -1;
     mov=-1;
   }
@@ -45,9 +43,7 @@ double Joystick::readY(bool decimal) {
   } else if (move > 1){
     mov = 1;
     move=1;
-  }
-
-  else if (move < -1){
+  }else if (move < -1){
     mov = -1;
     move=-1;
   }

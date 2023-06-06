@@ -1,6 +1,5 @@
 #include "bar.h"
 #include "point.h"
-#include "joystick.h"
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -8,7 +7,7 @@
 extern Adafruit_SH1107 display;
 extern int joystickMiddle, joystickRange, joystickSensivity;
 extern int screenWidth, screenHeight;
-extern Joystick j;
+
 
 
 Bar::Bar(int length, int x, int y, bool horizontal, bool displayed, bool collide)
@@ -54,9 +53,14 @@ void Bar::drawBar() {
 
 
 void Bar::updateLocation(double delta) {
-  float move = j.readY(false);
+  float move = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
+  if(move > 1)
+    move = 1;
+  else if (move <-1)
+    move = -1;
+  else
+    move = 0;
   direction = Vector(0,move);
-  Serial.println(move);
   this->p.Y += move * speed * delta;
   if (this->p.Y < 0) {
     this->p.Y = 0;

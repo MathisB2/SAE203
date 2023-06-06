@@ -19,7 +19,7 @@ Ball::Ball()
     delay(500);
   int randomPos = random(360);
   Serial.print(randomPos);
-  Vector newDirection(cos(radians(randomPos)), cos(radians(randomPos)));
+  Vector newDirection(cos(radians(randomPos)), sin(radians(randomPos)));
 
   direction = newDirection;
 }
@@ -87,11 +87,11 @@ void Ball::move(double delta) {
 
   if(switchX){
     direction.setX(direction.getX() * -1);
-    Vector barVector = playerBar.getDirection() * playerBar.getSpeed()/6;
-    Vector ballVector = direction * speed;
-    Vector newDirection = barVector + ballVector;
+    // Vector barVector = playerBar.getDirection() * playerBar.getSpeed()/6;
+    // Vector ballVector = direction * speed;
+    // Vector newDirection = barVector + ballVector;
 
-    direction = newDirection/newDirection.magnitude;
+    // direction = newDirection/newDirection.magnitude;
   }
   if(switchY){
     direction.setY(direction.getY() * -1);
