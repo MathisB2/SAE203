@@ -65,7 +65,7 @@ void IRAM_ATTR buttonB() {  //function linked to an interruption on button B
 void startGame() {
   if (b != nullptr)
     delete b;
-  b = new Ball());
+  b = new Ball();
   display.setRotation(0);
 
   score.resetScore();
