@@ -7,18 +7,31 @@
 #include <Adafruit_SH110X.h>
 extern Adafruit_SH1107 display;
 extern int screenWidth, screenHeight;
-extern Bar playerBar, topBar, bottomBar, goalBar,portalBar;
+extern int joystickMiddle, joystickRange, joystickSensivity;
+extern Bar playerBar, topBar, bottomBar, goalBar, portalBar;
 
 Ball::Ball()
-  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), direction(Vector(-.5, -.5)), speed(10), radius(20),inPortal(false) {}
+  : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), speed(20), radius(5), inPortal(false) {
+  double x = (analogRead(A5) - joystickMiddle) / (float)joystickRange;
+  double y = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
+  Vector newDirection(x, y);
+  
+  while (newDirection.magnitude <= 2) {
+    double x = (analogRead(A5) - joystickMiddle) / (float)joystickRange;
+    double y = (analogRead(A4) - joystickMiddle) / (float)joystickRange;
+    newDirection = Vector(x, y);
+  }
+
+  direction = newDirection;
+}
 
 Ball::Ball(String ballInfo)
-    :position(Vector(0, 0)), direction(Vector(.5, .5)) {
-  position = Vector(screenHeight+(screenHeight-getSplitedString(ballInfo, 1)), screenWidth-getSplitedString(ballInfo, 2));
-  direction = Vector(-getSplitedString(ballInfo, 3),- getSplitedString(ballInfo, 4));
+  : position(Vector(0, 0)), direction(Vector(.5, .5)) {
+  position = Vector(screenHeight + (screenHeight - getSplitedString(ballInfo, 1)), screenWidth - getSplitedString(ballInfo, 2));
+  direction = Vector(-getSplitedString(ballInfo, 3), -getSplitedString(ballInfo, 4));
   speed = getSplitedString(ballInfo, 5);
   radius = getSplitedString(ballInfo, 6);
-  inPortal=true;
+  inPortal = true;
 }
 
 String Ball::toString() {
@@ -49,28 +62,18 @@ double Ball::getSplitedString(String s, int indexOfArray) {
   return result[indexOfArray].toDouble();
 }
 
-
-/*
 void Ball::move(double delta) {
-  position += direction * speed * delta;
-  bool switchX = false;
 
-  if (playerBar.isCollidedBy(*this) && direction.getX() < 0) {
-    switchX = !switchX;
+  if(position.getY()<topBar.getY()){
+    position.setY(topBar.getY());
+  }
+  if(position.getY()>bottomBar.getY()){
+    position.setY(bottomBar.getY());
+  }
+   if(position.getX()<goalBar.getX()){
+    position.setX(bottomBar.getX());
   }
 
-  if (switchX) {
-    direction.setX(direction.getX() * -1);
-    speed += 1;
-  }
-  if ((position.getY()-radius <= 0 && direction.getY() < 0)|| (position.getY()+radius >= screenWidth && direction.getY() >0)) {
-    direction.setY(direction.getY() * -1);
-  }
-}
-
-*/
-
-void Ball::move(double delta) {
   position += direction * speed * delta;
   bool switchX = false;
   bool switchY = false;
@@ -102,7 +105,7 @@ void Ball::move(double delta) {
 
 
 bool Ball::changeScreen() {
-  return position.getX()-radius > screenHeight && direction.getX() > 0;
+  return position.getX() - radius > screenHeight && direction.getX() > 0;
 }
 
 bool Ball::loose() {
@@ -125,11 +128,10 @@ void Ball::draw() {
   }
 }
 
-
-double Ball::getXvector(){
+double Ball::getXvector() {
   return direction.getX();
 }
 
-double Ball::getYvector(){
+double Ball::getYvector() {
   return direction.getY();
 }

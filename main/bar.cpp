@@ -71,7 +71,13 @@ void Bar::updateLocation(double delta) {
   }
 }
 
+double Bar::getX(){
+  return p.X;
+}
 
+double Bar::getY(){
+  return p.Y;
+}
 void Bar::resetLocation() {
   this->p.Y = screenHeight - (int)(this->length / 2);
 }
@@ -80,7 +86,7 @@ bool Bar::isCollidedBy(Ball& b) {
 
   Point cursor;
 
-  if (this->horizontal == true) {
+  if (this->horizontal) {
     cursor.X = b.getX();
 
     cursor.Y = this->p.Y;
