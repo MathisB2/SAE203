@@ -12,15 +12,15 @@ extern Adafruit_SH1107 display;
 extern int screenWidth, screenHeight;
 extern int joystickMiddle, joystickRange, joystickSensivity;
 extern Bar playerBar, topBar, bottomBar, goalBar, portalBar;
-extern Joystick j
+extern Joystick j;
 
 Ball::Ball()
   : position(Vector(screenHeight / 2.0, screenWidth / 2.0)), speed(20), radius(5), inPortal(false) {
+    delay(500);
   int randomPos = random(360);
   Vector newDirection(cos(radians(randomPos)), cos(radians(randomPos)));
 
   direction = newDirection;
-  while(!j.isClicked()){}
 }
 
 Ball::Ball(String ballInfo)

@@ -6,27 +6,27 @@
 
 Joystick::Joystick() {
   reset();
-  xRange = 1200;
-  yRange = 1200;
+  xRange = 1000;
+  yRange = 1000;
   deadZone = 0.05;
 }
 
 
 double Joystick::readX(bool decimal) {
   float move = (analogRead(A5) - xCenter) / (float)xRange;
-  int mov;
+  int mov=0;
   if (move < deadZone && move > -deadZone) {
     return 0;
   } else if (move > 1){
     move = 1;
     mov=1;
   }
-    
+
   else if (move < -1){
      move = -1;
     mov=-1;
   }
-   
+
 
   if (decimal) {
     return move;
@@ -39,21 +39,21 @@ double Joystick::readX(bool decimal) {
 
 double Joystick::readY(bool decimal) {
   float move = (analogRead(A4) - yCenter) / (float)yRange;
-   int mov;
+   int mov=0;
   if (move < deadZone && move > -deadZone) {
     return 0;
   } else if (move > 1){
     mov = 1;
     move=1;
   }
-    
+
   else if (move < -1){
     mov = -1;
     move=-1;
   }
-    
-  
-  
+
+
+
   if (decimal) {
     return move;
   } else {
